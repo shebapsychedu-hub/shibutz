@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>שיבוץ להדרכת ראיון פסיכיאטרי</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap">
+<style>
+:root {
+  --bg: #EEF4F1; --surface: #FFFFFF; --ink: #12343B; --muted: #51656A;
+  --line: #CFDDD8; --accent: #0F6B66; --accent-ink: #FFFFFF;
+  --mark: #E0A526; --warn: #A8481A; --soft: #DDEAE6;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E2226; --surface: #16323A; --ink: #E6F0ED; --muted: #9DB4B2;
+    --line: #2C4C52; --accent: #5CC4B4; --accent-ink: #0E2226;
+    --mark: #F0BE4A; --warn: #F0A27A; --soft: #1D3D45;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E2226; --surface: #16323A; --ink: #E6F0ED; --muted: #9DB4B2;
+  --line: #2C4C52; --accent: #5CC4B4; --accent-ink: #0E2226;
+  --mark: #F0BE4A; --warn: #F0A27A; --soft: #1D3D45;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: "Assistant", "Arial Hebrew", Arial, sans-serif;
+  font-size: 1.0625rem; line-height: 1.55;
+}
+main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.125rem 4rem; }
+h1, h2 { font-family: "Frank Ruhl Libre", "David", "Times New Roman", serif; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 7vw, 2.75rem); font-weight: 700; }
+h2 { font-size: 1.375rem; font-weight: 500; margin-bottom: .75rem; }
+.lede { color: var(--muted); margin: .875rem 0 0; max-width: 34rem; }
+section { margin-top: 2.25rem; }
+.hint { color: var(--muted); font-size: .9375rem; margin: -.375rem 0 .75rem; }
+
+.dates { display: grid; gap: .625rem; }
+.date { position: relative; display: block; cursor: pointer; }
+.date input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.tile {
+  display: grid; grid-template-columns: 4.75rem 1fr auto; align-items: center; gap: .875rem;
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: .5rem;
+  padding: .75rem .875rem; transition: background .15s, border-color .15s, color .15s;
+}
+.day {
+  text-align: center; border-inline-end: 1.5px dashed var(--line); padding-inline-end: .875rem;
+}
+.day b { display: block; font-family: "Frank Ruhl Libre", "David", serif; font-size: 2.5rem; line-height: 1; font-weight: 700; }
+.day span { font-size: .875rem; color: var(--muted); }
+.what strong { display: block; font-size: 1.125rem; font-weight: 700; }
+.what span { color: var(--muted); font-size: .9375rem; }
+.side { text-align: center; min-width: 3.25rem; }
+.tick {
+  width: 1.75rem; height: 1.75rem; border-radius: 50%; border: 1.5px solid var(--line);
+  margin: 0 auto; display: grid; place-items: center; color: transparent; font-weight: 700;
+}
+.count { display: block; font-size: .8125rem; color: var(--muted); margin-top: .25rem; min-height: 1.1em; }
+.date input:checked + .tile { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.date input:checked + .tile .day { border-color: color-mix(in srgb, var(--accent-ink) 45%, transparent); }
+.date input:checked + .tile .day span,
+.date input:checked + .tile .what span,
+.date input:checked + .tile .count { color: var(--accent-ink); opacity: .85; }
+.date input:checked + .tile .tick { background: var(--mark); border-color: var(--mark); color: #12343B; }
+.date input:focus-visible + .tile { outline: 3px solid var(--mark); outline-offset: 2px; }
+
+.field { display: block; margin-top: 1rem; }
+.field > span { display: block; font-weight: 600; margin-bottom: .3rem; }
+input[type="text"], textarea {
+  width: 100%; font: inherit; color: var(--ink); background: var(--surface);
+  border: 1.5px solid var(--line); border-radius: .5rem; padding: .625rem .75rem;
+}
+textarea { min-height: 4.5rem; resize: vertical; }
+input[type="text"]:focus-visible, textarea:focus-visible { outline: 3px solid var(--mark); outline-offset: 1px; border-color: var(--accent); }
+
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.chip span {
+  display: block; padding: .4rem .95rem; border: 1.5px solid var(--line); border-radius: 2rem;
+  background: var(--surface); min-width: 2.75rem; text-align: center;
+}
+.chip input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.chip input:focus-visible + span { outline: 3px solid var(--mark); outline-offset: 2px; }
+fieldset { border: 0; padding: 0; margin: 1.25rem 0 0; }
+legend { font-weight: 600; padding: 0; margin-bottom: .45rem; }
+[hidden] { display: none !important; }
+
+.actions { margin-top: 1.75rem; }
+button {
+  font: inherit; cursor: pointer; border-radius: .5rem; border: 1.5px solid var(--accent);
+  background: var(--accent); color: var(--accent-ink); font-weight: 700; padding: .7rem 1.4rem;
+}
+button:disabled { opacity: .6; cursor: default; }
+button:focus-visible { outline: 3px solid var(--mark); outline-offset: 2px; }
+button.quiet { background: transparent; color: var(--accent); font-weight: 600; padding: .3rem .7rem; font-size: .9375rem; }
+.msg { margin: .75rem 0 0; font-weight: 600; min-height: 1.5em; }
+.msg.err { color: var(--warn); }
+.msg.ok { color: var(--accent); }
+
+.box { background: var(--surface); border: 1.5px solid var(--line); border-radius: .5rem; padding: 1rem; margin-top: 1rem; }
+.box p { margin: 0 0 .625rem; }
+.box textarea { min-height: 9rem; margin-bottom: .625rem; }
+
+.owner { border-top: 1.5px dashed var(--line); padding-top: 2rem; margin-top: 3rem; }
+.slot { background: var(--surface); border: 1.5px solid var(--line); border-radius: .5rem; padding: .75rem .875rem; margin-bottom: .625rem; }
+.slot header { display: flex; justify-content: space-between; gap: .75rem; align-items: baseline; flex-wrap: wrap; }
+.slot header strong { font-size: 1.0625rem; }
+.status { font-size: .9375rem; font-weight: 600; padding: .1rem .6rem; border-radius: 2rem; background: var(--soft); }
+.status.short { color: var(--warn); }
+.slot ul { margin: .5rem 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: .375rem; }
+.slot li { background: var(--soft); border-radius: .375rem; padding: .1rem .55rem; font-size: .9375rem; }
+.slot .none { color: var(--muted); font-size: .9375rem; margin: .5rem 0 0; }
+.scroll { overflow-x: auto; margin-top: 1.25rem; }
+table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .9375rem; }
+th, td { text-align: start; padding: .5rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>הדרכת ראיון פסיכיאטרי לסטודנטים</h1>
+  <p class="lede">ארבעה מפגשים, כשעתיים כל אחד. בכל מפגש כל מתמחה מלווה קבוצה קטנה של סטודנטים בראיון מודרך. סמנו את כל המועדים שאתם יכולים, והשיבוץ הסופי יישלח בנפרד.</p>
+
+  <section>
+    <h2>באילו מועדים אפשר לשבץ אותך?</h2>
+    <p class="hint">אפשר לסמן כמה מועדים. ככל שתסמנו יותר, קל יותר לשבץ.</p>
+    <div class="dates" id="dates"></div>
+  </section>
+
+  <section>
+    <h2>פרטים</h2>
+    <label class="field"><span>שם מלא</span>
+      <input type="text" id="name" autocomplete="name" maxlength="80">
+    </label>
+
+    <fieldset id="hoursBox" hidden>
+      <legend>למועדים שהשעה בהם עוד לא נקבעה, מה נוח לך?</legend>
+      <div class="chips" id="hours"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>בכמה מפגשים מתאים לך להדריך?</legend>
+      <div class="chips" id="max"></div>
+    </fieldset>
+
+    <label class="field"><span>הערות או אילוצים (לא חובה)</span>
+      <textarea id="notes" maxlength="500"></textarea>
+    </label>
+
+    <div class="actions">
+      <button id="save" type="button">שליחת זמינות</button>
+      <p class="msg" id="msg" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="box" id="fallback" hidden>
+      <p>השליחה לא הצליחה. העתיקו את ההודעה ושלחו אותה בווטסאפ לאחראית המתמחים.</p>
+      <textarea id="fallbackText" readonly></textarea>
+      <button id="copy" type="button">העתקת ההודעה</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  /* כתובת המייל שאליה נשלחות התשובות. אחרי ההפעלה אפשר להחליף אותה בקוד שמתקבל מ-FormSubmit. */
+  var ENDPOINT = "https://formsubmit.co/ajax/bosmathoch@gmail.com";
+
+  var DATES = [
+    { id: "d2110", day: "21", month: "אוקטובר", label: "21/10", weekday: "יום רביעי", time: "13:00 עד 15:00", topic: "פסיכוזה", flex: false },
+    { id: "d2510", day: "25", month: "אוקטובר", label: "25/10", weekday: "יום ראשון", time: "השעה תיקבע בהמשך", topic: "הפרעות אישיות, חרדה ו-PTSD", flex: true },
+    { id: "d2810", day: "28", month: "אוקטובר", label: "28/10", weekday: "יום רביעי", time: "13:00 עד 15:00", topic: "הפרעות אפקטיביות", flex: false },
+    { id: "d0811", day: "8", month: "נובמבר", label: "8/11", weekday: "יום ראשון", time: "שעה גמישה", topic: "הפרעות אישיות, חרדה ו-PTSD", flex: true }
+  ];
+  var HOURS = [
+    { id: "morning", label: "בוקר" },
+    { id: "noon", label: "צהריים, 13:00 עד 15:00" },
+    { id: "afternoon", label: "אחר הצהריים" },
+    { id: "any", label: "גמיש" }
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  DATES.forEach(function (d) {
+    var label = el("label", "date");
+    var input = el("input"); input.type = "checkbox"; input.value = d.id; input.id = d.id;
+    var tile = el("span", "tile");
+    var day = el("span", "day"); day.appendChild(el("b", null, d.day)); day.appendChild(el("span", null, d.month));
+    var what = el("span", "what"); what.appendChild(el("strong", null, d.topic)); what.appendChild(el("span", null, d.weekday + ", " + d.time));
+    var side = el("span", "side");
+    var tick = el("span", "tick", "✓"); tick.setAttribute("aria-hidden", "true");
+    side.appendChild(tick);
+    tile.appendChild(day); tile.appendChild(what); tile.appendChild(side);
+    label.appendChild(input); label.appendChild(tile);
+    input.addEventListener("change", syncHours);
+    $("dates").appendChild(label);
+  });
+  HOURS.forEach(function (h) {
+    var label = el("label", "chip");
+    var input = el("input"); input.type = "checkbox"; input.name = "hours"; input.value = h.id;
+    label.appendChild(input); label.appendChild(el("span", null, h.label));
+    $("hours").appendChild(label);
+  });
+  [1, 2, 3, 4].forEach(function (n) {
+    var label = el("label", "chip");
+    var input = el("input"); input.type = "radio"; input.name = "max"; input.value = String(n);
+    if (n === 1) input.checked = true;
+    label.appendChild(input); label.appendChild(el("span", null, String(n)));
+    $("max").appendChild(label);
+  });
+
+  function selectedDates() { return DATES.filter(function (d) { return $(d.id).checked; }).map(function (d) { return d.id; }); }
+  function selectedHours() {
+    return Array.prototype.filter.call(document.querySelectorAll('input[name="hours"]'), function (i) { return i.checked; }).map(function (i) { return i.value; });
+  }
+  function syncHours() {
+    $("hoursBox").hidden = !DATES.some(function (d) { return d.flex && $(d.id).checked; });
+  }
+  function setMsg(text, kind) { var m = $("msg"); m.textContent = text || ""; m.className = "msg" + (kind ? " " + kind : ""); }
+
+  function readForm() {
+    var dates = selectedDates();
+    var flex = DATES.some(function (d) { return d.flex && dates.indexOf(d.id) > -1; });
+    var maxEl = document.querySelector('input[name="max"]:checked');
+    var max = Math.min(parseInt(maxEl ? maxEl.value : "1", 10) || 1, Math.max(dates.length, 1));
+    return {
+      name: $("name").value.trim().slice(0, 80),
+      dates: dates,
+      hours: flex ? selectedHours() : [],
+      max: max,
+      notes: $("notes").value.trim().slice(0, 500)
+    };
+  }
+  function dateText(ids) {
+    return DATES.filter(function (d) { return ids.indexOf(d.id) > -1; }).map(function (d) { return d.label + " (" + d.topic + ")"; }).join(", ");
+  }
+  function hoursText(ids) {
+    return HOURS.filter(function (h) { return ids.indexOf(h.id) > -1; }).map(function (h) { return h.label; }).join(" / ");
+  }
+  function messageText(f) {
+    var lines = ["זמינות להדרכת ראיון פסיכיאטרי", "שם: " + f.name, "מועדים: " + dateText(f.dates)];
+    if (f.hours.length) lines.push("שעות נוחות למועדים הגמישים: " + hoursText(f.hours));
+    lines.push("מספר מפגשים: " + f.max);
+    if (f.notes) lines.push("הערות: " + f.notes);
+    return lines.join("\n");
+  }
+  function showFallback(f) {
+    $("fallbackText").value = messageText(f);
+    $("fallback").hidden = false;
+    $("fallback").scrollIntoView({ block: "nearest" });
+  }
+
+  $("save").addEventListener("click", async function () {
+    var f = readForm();
+    $("fallback").hidden = true;
+    if (!f.dates.length) { setMsg("סמנו לפחות מועד אחד.", "err"); return; }
+    if (!f.name) { setMsg("חסר שם מלא.", "err"); $("name").focus(); return; }
+    var btn = $("save"); btn.disabled = true; setMsg("שולח…");
+    try {
+      var res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: "זמינות להדרכת ראיון: " + f.name,
+          _template: "table",
+          _captcha: "false",
+          "שם": f.name,
+          "מועדים": dateText(f.dates),
+          "שעות נוחות": f.hours.length ? hoursText(f.hours) : "לא רלוונטי",
+          "מספר מפגשים": String(f.max),
+          "הערות": f.notes || "אין"
+        })
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok || String(data.success) === "false") throw new Error("send failed");
+      setMsg("הזמינות נשלחה, תודה. אם משהו משתנה אפשר לשלוח שוב.", "ok");
+    } catch (e) {
+      setMsg("");
+      showFallback(f);
+    }
+    btn.disabled = false;
+  });
+
+  $("copy").addEventListener("click", async function () {
+    var t = $("fallbackText");
+    try { await navigator.clipboard.writeText(t.value); $("copy").textContent = "ההודעה הועתקה"; }
+    catch (e) { t.focus(); t.select(); $("copy").textContent = "ההודעה מסומנת, העתיקו אותה ידנית"; }
+  });
+})();
+</script>
+</body>
+</html>
