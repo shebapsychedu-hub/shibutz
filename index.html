@@ -142,7 +142,7 @@ th { color: var(--muted); font-weight: 600; }
     </label>
 
     <fieldset id="hoursBox" hidden>
-      <legend>למועדים שהשעה בהם עוד לא נקבעה, מה נוח לך?</legend>
+      <legend>ב-8/11 השעה עוד לא נקבעה. מה נוח לך?</legend>
       <div class="chips" id="hours"></div>
     </fieldset>
 
@@ -176,7 +176,7 @@ th { color: var(--muted); font-weight: 600; }
 
   var DATES = [
     { id: "d2110", day: "21", month: "אוקטובר", label: "21/10", weekday: "יום רביעי", time: "13:00 עד 15:00", topic: "פסיכוזה", flex: false },
-    { id: "d2510", day: "25", month: "אוקטובר", label: "25/10", weekday: "יום ראשון", time: "השעה תיקבע בהמשך", topic: "הפרעות אישיות, חרדה ו-PTSD", flex: true },
+    { id: "d2510", day: "25", month: "אוקטובר", label: "25/10", weekday: "יום ראשון", time: "13:00 עד 15:00", topic: "הפרעות אישיות, חרדה ו-PTSD", flex: false },
     { id: "d2810", day: "28", month: "אוקטובר", label: "28/10", weekday: "יום רביעי", time: "13:00 עד 15:00", topic: "הפרעות אפקטיביות", flex: false },
     { id: "d0811", day: "8", month: "נובמבר", label: "8/11", weekday: "יום ראשון", time: "השעה תיקבע בהמשך", topic: "הפרעות אישיות, חרדה ו-PTSD", flex: true }
   ];
@@ -253,7 +253,7 @@ th { color: var(--muted); font-weight: 600; }
   }
   function messageText(f) {
     var lines = ["זמינות להדרכת ראיון פסיכיאטרי", "שם: " + f.name, "מועדים: " + dateText(f.dates)];
-    if (f.hours.length) lines.push("שעות נוחות למועדים הגמישים: " + hoursText(f.hours));
+    if (f.hours.length) lines.push("שעות נוחות ל-8/11: " + hoursText(f.hours));
     lines.push("מספר מפגשים: " + f.max);
     if (f.notes) lines.push("הערות: " + f.notes);
     return lines.join("\n");
@@ -286,11 +286,16 @@ th { color: var(--muted); font-weight: 600; }
         })
       });
       var data = await res.json().catch(function () { return {}; });
-      if (!res.ok || String(data.success) === "false") throw new Error("send failed");
+      if (!res.ok || String(data.success) === "false") throw new Error(data.message || ("HTTP " + res.status));
       setMsg("הזמינות נשלחה, תודה. אם משהו משתנה אפשר לשלוח שוב.", "ok");
     } catch (e) {
-      setMsg("");
-      showFallback(f);
+      var why = String((e && e.message) || "");
+      if (/activ/i.test(why)) {
+        setMsg("נשלח מייל הפעלה לכתובת של אחראית המתמחים. אחרי האישור במייל יש לשלוח שוב.", "err");
+      } else {
+        setMsg(why ? "פרטי התקלה: " + why : "", "err");
+        showFallback(f);
+      }
     }
     btn.disabled = false;
   });
